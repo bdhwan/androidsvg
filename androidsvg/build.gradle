@@ -1,6 +1,32 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release' // must be applied after your artifact generating plugin (eg. java / com.android.library)
+
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.3.4'
+    }
+}
+
+
+
+publish {
+    userOrg = 'bdhwan'
+    repoName = 'vxmaker'
+    groupId = 'com.altamirasoft.androidsvg'
+    artifactId = 'androidsvg'
+    publishVersion = genVersionName()
+    desc = 'androidsvg util for android'
+    website = 'https://github.com/bdhwan/androidsvg'
+}
+
+
 
 android {
     compileSdkVersion 24
@@ -17,16 +43,22 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+
 }
 
 
 
 
-
 def gitVersion() {
+
     def process = "git rev-list master --first-parent --count".execute()
     def result = process.text.trim()
     if (result == "") {
@@ -35,24 +67,11 @@ def gitVersion() {
         return result.toInteger()
     }
 }
-def gitSting() {
-    def process = "git rev-parse --short HEAD".execute()
-    def result = process.text.toString().trim()
-    if (result == "") {
-        result = "no_git"
-    }
-    return result
-}
-
-def buildTime() {
-    def df = new SimpleDateFormat("yyyyMMdd")
-    return df.format(new Date())
-}
-
 
 def genVersionName() {
-    return buildTime() + "_" + project.getRootProject().name + "_v" + gitVersion() + "." + gitSting()
+    return '0.1.'+gitVersion()
 }
+
 
 
 task makeJar(type: Copy) {
