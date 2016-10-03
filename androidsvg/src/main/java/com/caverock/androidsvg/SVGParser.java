@@ -67,6 +67,7 @@ import com.caverock.androidsvg.SVG.Unit;
  * 
  * @hide
  */
+
 public class SVGParser extends DefaultHandler2
 {
    private static final String  TAG = "SVGParser";
